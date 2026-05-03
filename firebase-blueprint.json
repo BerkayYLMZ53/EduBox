@@ -1,0 +1,88 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile and academic stats",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string" },
+        "displayName": { "type": "string" },
+        "department": { "type": "string" },
+        "university": { "type": "string" },
+        "successScore": { "type": "number" },
+        "level": { "type": "number" },
+        "badges": { "type": "array", "items": { "type": "string" } },
+        "targets": { "type": "array", "items": { "type": "string" } },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "email", "successScore", "level"]
+    },
+    "Reward": {
+      "title": "Reward",
+      "description": "Rewards like discounts or boxes",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "type": { "type": "string", "enum": ["physical_box", "digital_discount"] },
+        "requiredScore": { "type": "number" },
+        "brand": { "type": "string" },
+        "imageUrl": { "type": "string" }
+      },
+      "required": ["id", "title", "type", "requiredScore"]
+    },
+    "Task": {
+      "title": "Task",
+      "description": "Academic tasks or quizzes",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "type": { "type": "string", "enum": ["quiz", "challenge"] },
+        "category": { "type": "string" },
+        "scoreReward": { "type": "number" },
+        "content": { "type": "object" }
+      },
+      "required": ["id", "title", "type", "scoreReward"]
+    },
+    "UserTask": {
+      "title": "UserTask",
+      "description": "Tracking user progress on tasks",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "taskId": { "type": "string" },
+        "status": { "type": "string", "enum": ["in_progress", "completed"] },
+        "completedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "taskId", "status"]
+    },
+    "Note": {
+      "title": "Note",
+      "description": "Community shared study notes",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "authorId": { "type": "string" },
+        "authorName": { "type": "string" },
+        "title": { "type": "string" },
+        "department": { "type": "string" },
+        "content": { "type": "string" },
+        "upvotes": { "type": "number" },
+        "approved": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "authorId", "title", "content"]
+    }
+  },
+  "firestore": {
+    "users": { "schema": "User", "description": "User profiles" },
+    "rewards": { "schema": "Reward", "description": "Available rewards" },
+    "tasks": { "schema": "Task", "description": "Tasks and quizzes" },
+    "userTasks": { "schema": "UserTask", "description": "User task tracking" },
+    "notes": { "schema": "Note", "description": "Community study notes" }
+  }
+}
