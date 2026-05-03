@@ -9,6 +9,7 @@ export interface UserProfile {
   department: string;
   successScore: number;
   level: number;
+  photoURL?: string;
   createdAt: string;
 }
 

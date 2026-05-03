@@ -18,7 +18,10 @@ service cloud.firestore {
       return data.uid is string && data.uid.size() <= 128 &&
              data.email is string && data.email.size() <= 100 &&
              data.successScore is number &&
-             data.level is number;
+             data.level is number &&
+             (data.displayName == null || (data.displayName is string && data.displayName.size() <= 100)) &&
+             (data.department == null || (data.department is string && data.department.size() <= 100)) &&
+             (data.photoURL == null || (data.photoURL is string && data.photoURL.size() <= 1000000));
     }
 
     match /users/{userId} {
@@ -28,7 +31,9 @@ service cloud.firestore {
       allow update: if isOwner(userId) && isValidUser(incoming()) && (
         // Prevent spoofing immutable fields
         incoming().uid == existing().uid &&
-        incoming().email == existing().email
+        incoming().email == existing().email &&
+        incoming().successScore == existing().successScore &&
+        incoming().level == existing().level
       );
     }
 
@@ -51,9 +56,9 @@ service cloud.firestore {
              data.status in ['in_progress', 'completed'];
     }
 
-    match /userTasks/{userTaskId} {
+    match /user_tasks/{userTaskId} {
       allow get: if isSignedIn() && isOwner(resource.data.userId); 
-      allow list: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow list: if isSignedIn() && (resource.data.userId == request.auth.uid);
       allow create: if isSignedIn() && isValidUserTask(incoming());
       allow update: if isOwner(existing().userId) && isValidUserTask(incoming()) && incoming().userId == existing().userId;
     }
@@ -72,6 +77,31 @@ service cloud.firestore {
       allow update: if (isOwner(existing().authorId) && isValidNote(incoming()) && incoming().authorId == existing().authorId) ||
                     (isSignedIn() && incoming().diff(existing()).affectedKeys().hasOnly(['upvotes']));
       allow delete: if isOwner(existing().authorId);
+    }
+
+    // Reward Claims
+    match /reward_claims/{claimId} {
+      allow create: if isSignedIn() && incoming().userId == request.auth.uid;
+      allow read: if isSignedIn() && resource.data.userId == request.auth.uid;
+    }
+
+    // Notifications
+    match /notifications/{notificationId} {
+      allow read: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow list: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow create: if isSignedIn();
+      allow update: if isSignedIn() && isOwner(existing().userId) && incoming().diff(existing()).affectedKeys().hasOnly(['read']);
+    }
+
+    // Feedback
+    function isValidFeedback(data) {
+      return data.userId == request.auth.uid &&
+             data.type in ['suggestion', 'bug', 'general'] &&
+             data.message is string && data.message.size() <= 5000;
+    }
+
+    match /feedback/{feedbackId} {
+      allow create: if isSignedIn() && isValidFeedback(incoming());
     }
   }
 }

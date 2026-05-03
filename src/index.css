@@ -22,4 +22,21 @@
   .bg-success-glass {
     @apply bg-white/70 backdrop-blur-md;
   }
+
+  .clip-path-hero {
+    clip-path: polygon(25% 0%, 100% 0%, 100% 100%, 0% 100%);
+  }
+
+  .glass-card {
+    @apply bg-white/40 backdrop-blur-xl border border-white/20 shadow-2xl;
+  }
+
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
 }

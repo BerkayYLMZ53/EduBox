@@ -75,6 +75,16 @@ export default function Community() {
       await updateDoc(authorRef, {
         successScore: increment(5)
       });
+
+      // Create notification for author
+      await addDoc(collection(db, 'notifications'), {
+        userId: note.authorId,
+        title: "Notun Beğenildi!",
+        message: `${profile.displayName} senin "${note.title}" notunu beğendi. +5 PT kazandın!`,
+        type: 'community',
+        read: false,
+        createdAt: serverTimestamp()
+      });
     } catch (error) {
       console.error(error);
     }
@@ -84,21 +94,40 @@ export default function Community() {
     <motion.div 
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="py-8 space-y-8"
+      className="py-8 space-y-12"
     >
-      <header className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-        <div>
-          <h1 className="text-3xl font-bold text-slate-900 tracking-tight">Öğrenci Topluluğu</h1>
-          <p className="text-indigo-600 font-bold text-sm uppercase tracking-widest">YARDIMLAŞMA / PAYLAŞIM / DESTEK</p>
+      {/* Community Hero Header */}
+      <div className="relative p-10 md:p-12 bg-white rounded-[3rem] card-shadow border border-slate-50 overflow-hidden group">
+        <div className="absolute top-0 right-0 w-1/3 h-full bg-indigo-50/50 clip-path-hero" />
+        <div className="absolute -bottom-10 -right-10 w-64 h-64 bg-indigo-500/5 rounded-full blur-3xl animate-pulse" />
+        
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-8">
+          <div className="space-y-4">
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="inline-flex items-center gap-2 px-3 py-1 bg-indigo-600 text-white rounded-full text-[10px] font-black uppercase tracking-widest"
+            >
+              <Users className="w-3 h-3" />
+              Birlikte Daha Güçlüyüz
+            </motion.div>
+            <h1 className="text-4xl md:text-5xl font-black text-slate-900 tracking-tight leading-tight">
+              Öğrenci <span className="text-indigo-600">Topluluğu</span>
+            </h1>
+            <p className="text-slate-500 font-bold max-w-md leading-relaxed">
+              Notlarını paylaş, sorularını sor ve diğer öğrencilere destek ol. Yardımlaştıkça hem sen hem de topluluk kazansın.
+            </p>
+          </div>
+
+          <button
+            onClick={() => setShowAddModal(true)}
+            className="flex items-center gap-2 vibrant-gradient text-white px-10 py-5 rounded-2xl font-black hover:opacity-90 transition-all shadow-xl shadow-indigo-100 group/btn"
+          >
+            <Plus className="w-6 h-6 group-hover/btn:rotate-90 transition-transform duration-300" />
+            NOT PAYLAŞ (+30 PT)
+          </button>
         </div>
-        <button
-          onClick={() => setShowAddModal(true)}
-          className="flex items-center gap-2 vibrant-gradient text-white px-8 py-4 rounded-2xl font-black hover:opacity-90 transition-all shadow-xl shadow-indigo-100"
-        >
-          <Plus className="w-5 h-5" />
-          NOT PAYLAŞ
-        </button>
-      </header>
+      </div>
 
       <div className="relative group">
          <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-300 group-focus-within:text-indigo-500 transition-colors" />

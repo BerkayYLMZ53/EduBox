@@ -8,6 +8,7 @@ import Rewards from './pages/Rewards';
 import Tasks from './pages/Tasks';
 import Community from './pages/Community';
 import Login from './pages/Login';
+import Profile from './pages/Profile';
 import { motion, AnimatePresence } from 'motion/react';
 
 export default function App() {
@@ -48,6 +49,7 @@ export default function App() {
               <Route path="/rewards" element={user ? <Rewards /> : <Navigate to="/login" />} />
               <Route path="/tasks" element={user ? <Tasks /> : <Navigate to="/login" />} />
               <Route path="/community" element={user ? <Community /> : <Navigate to="/login" />} />
+              <Route path="/profile" element={user ? <Profile /> : <Navigate to="/login" />} />
             </Routes>
           </AnimatePresence>
         </main>

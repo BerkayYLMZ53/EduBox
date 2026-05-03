@@ -56,6 +56,18 @@
         "userId": { "type": "string" },
         "taskId": { "type": "string" },
         "status": { "type": "string", "enum": ["in_progress", "completed"] },
+        "subTasks": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string" },
+              "text": { "type": "string" },
+              "completed": { "type": "boolean" }
+            }
+          }
+        },
+        "notes": { "type": "string" },
         "completedAt": { "type": "string", "format": "date-time" }
       },
       "required": ["userId", "taskId", "status"]
@@ -76,13 +88,50 @@
         "createdAt": { "type": "string", "format": "date-time" }
       },
       "required": ["id", "authorId", "title", "content"]
+    },
+    "Notification": {
+      "title": "Notification",
+      "description": "User notifications for tasks, badges, and community",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "title": { "type": "string" },
+        "message": { "type": "string" },
+        "type": { "type": "string", "enum": ["task", "badge", "community"] },
+        "read": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "userId", "title", "message", "type", "read"]
+    },
+    "Feedback": {
+      "title": "Feedback",
+      "description": "User submitted feedback, suggestions, or bug reports",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "userName": { "type": "string" },
+        "userEmail": { "type": "string" },
+        "type": { "type": "string", "enum": ["suggestion", "bug", "general"] },
+        "message": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "type", "message"]
     }
   },
   "firestore": {
     "users": { "schema": "User", "description": "User profiles" },
     "rewards": { "schema": "Reward", "description": "Available rewards" },
     "tasks": { "schema": "Task", "description": "Tasks and quizzes" },
-    "userTasks": { "schema": "UserTask", "description": "User task tracking" },
-    "notes": { "schema": "Note", "description": "Community study notes" }
+    "user_tasks": { "schema": "UserTask", "description": "User task tracking" },
+    "notes": { "schema": "Note", "description": "Community study notes" },
+    "notifications": {
+      "schema": "Notification",
+      "description": "User notifications"
+    },
+    "feedback": {
+      "schema": "Feedback",
+      "description": "User feedback and bug reports"
+    }
   }
 }
